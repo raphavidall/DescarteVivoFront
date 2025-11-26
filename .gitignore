@@ -7,7 +7,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Dependências (O MAIS IMPORTANTE)
 node_modules
 dist
 dist-ssr
@@ -23,16 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Variáveis de Ambiente (SEGURANÇA)
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Testes
-coverage
-
-# Vite temporários
-timestamp
