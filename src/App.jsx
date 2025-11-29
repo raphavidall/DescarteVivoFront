@@ -5,6 +5,8 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import MovimentarPage from './pages/MovimentarPage';
 import NotificacoesPage from './pages/NotificacoesPage';
+import ProfilePage from './pages/ProfilePage';
+import ExtratoPage from './pages/ExtratoPage';
 
 function App() {
   return (
@@ -30,6 +32,12 @@ function App() {
                 <a href="/dashboard" className="text-blue-500 underline">Voltar</a>
             </div>
         } />
+
+        {/* Rota de Perfil */}
+        <Route path="/perfil" element={<ProfilePage />} />
+
+        {/* Rota de Extrato */}
+        <Route path="/extrato" element={<ExtratoPage />} />
         
         {/* Rota 404 redireciona para login */}
         <Route path="*" element={<Navigate to="/" />} />

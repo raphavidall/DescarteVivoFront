@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, X, Send, User, Lock } from 'lucide-react'; // <--- ADICIONEI O LOCK
 import api from '../services/api';
 import { PACOTE_STATUS } from '../utils/constants';
+import { BASE_URL } from '../services/api';
 
-const API_URL = "http://localhost:3000";
+// const API_URL = "http://localhost:3000";
 
 const PacoteDetalhes = ({ pacote, onClose, onUpdate }) => {
   const [mensagens, setMensagens] = useState([]);
@@ -243,7 +244,7 @@ const PacoteDetalhes = ({ pacote, onClose, onUpdate }) => {
                 </div>
                 {pacoteAtual.imagemUrl ? (
                     <img 
-                        src={`${API_URL}/uploads/${pacoteAtual.imagemUrl}`} 
+                        src={`${ BASE_URL }/uploads/${pacoteAtual.imagemUrl}`} 
                         alt={pacoteAtual.titulo} 
                         className="w-full h-full object-cover"
                     />

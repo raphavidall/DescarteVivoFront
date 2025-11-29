@@ -1,7 +1,8 @@
 import React from 'react';
 import { MapPin } from 'lucide-react';
+import { BASE_URL } from '../services/api';
 
-const API_URL = "http://localhost:3000";
+// const API_URL = "http://192.168.1.15:3000";
 
 const PacoteCard = ({ pacote, onClick }) => {
   const materialNome = pacote.material?.nome || "Material";
@@ -59,7 +60,7 @@ const PacoteCard = ({ pacote, onClick }) => {
         <div className="w-full h-full bg-gray-50 flex items-center justify-center text-gray-300">
              {pacote.imagemUrl ? (
                 <img 
-                src={`${API_URL}/uploads/${pacote.imagemUrl}`} 
+                src={`${ BASE_URL }/uploads/${pacote.imagemUrl}`} 
                 alt={pacote.titulo} 
                 className="w-full h-full object-cover"
                 />
