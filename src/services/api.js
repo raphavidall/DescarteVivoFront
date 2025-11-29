@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+export const BASE_URL = 'https://descarte-api.onrender.com'; 
+
 const api = axios.create({
-  baseURL: 'http://localhost:3000', 
+  baseURL: BASE_URL,
 });
 
 // Interceptor: Adiciona o Token automaticamente em todas as requisições
