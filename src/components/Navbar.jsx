@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom'; // <--- Importe useLocation
 import { Bell } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const Navbar = () => {
-  const location = useLocation(); // <--- Hook para saber a URL atual
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState(0);
   const saldo = 48;
+
+  // Busca notificações para contar as não lidas/pendentes
+  useEffect(() => {
+    // Só busca se tiver token
+    if (localStorage.getItem('token')) {
+        api.get('/notificacoes').then(res => {
+            // Filtra: Quantas são do tipo SOLICITACAO e ainda não foram tratadas?
+            // Ou simplesmente quantas tem lida=false.
+            const count = res.data.filter(n => !n.lida).length;
+            setUnreadCount(count);
+        }).catch(err => console.log("Erro ao buscar badge"));
+    }
+  }, [location.pathname]);
 
   // Função auxiliar para definir estilo do link
   const getLinkClass = (path) => {
@@ -40,9 +57,19 @@ const Navbar = () => {
       {/* 3. Área Direita (igual ao anterior) */}
       <div className="flex items-center gap-4">
          {/* ... (mantém o código do sino e avatar) ... */}
-         <button className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full font-medium hover:bg-gray-800 transition">
+         <button 
+            onClick={() => navigate('/notificacoes')}
+            className="relative flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full font-medium hover:bg-gray-800 transition"
+        >
           <Bell size={18} />
           <span className="hidden md:inline">Notificações</span>
+
+          {/* O BADGE AMARELO */}
+          {unreadCount > 0 && (
+              <div className="absolute -top-2 -right-2 bg-[#FBBC05] text-black font-black text-xs w-6 h-6 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
+                  {unreadCount}
+              </div>
+          )}
         </button>
 
         <div className="bg-brand-green flex items-center gap-3 pl-4 pr-1 py-1 rounded-full text-brand-dark">

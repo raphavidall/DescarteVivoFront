@@ -151,12 +151,10 @@ const DescartarForm = ({ onSuccess }) => {
       // Localização vai como string JSON
       dataToSend.append("localizacao", JSON.stringify(formData.localizacao));
       
-      // Se tiver imagem, anexa
       if (imageFile) {
-          dataToSend.append("imagem", imageFile); // "imagem" deve bater com o nome no backend (upload.single("imagem"))
+          dataToSend.append("imagem", imageFile, imageFile.name);
       }
 
-      // Importante: O axios com FormData não precisa definir o header Content-Type manualmente, ele faz automático.
       await api.post('/pacotes', dataToSend);
       
       alert("Pacote descartado com sucesso!");
@@ -222,7 +220,8 @@ const DescartarForm = ({ onSuccess }) => {
                 </div>
                 <input 
                     name="titulo"
-                    type="text" 
+                    type="text"
+                    value={formData.titulo}
                     placeholder="Digite o nome do pacote (Ex: Garrafas PET limpas)"
                     className="w-full bg-white p-4 rounded-b-xl rounded-tr-xl font-medium outline-none focus:ring-2 focus:ring-black shadow-sm"
                     onChange={handleChange}

@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import MovimentarPage from './pages/MovimentarPage';
+import NotificacoesPage from './pages/NotificacoesPage';
 
 function App() {
   return (
@@ -19,13 +20,16 @@ function App() {
         {/* Rota de Dashboard */}
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/movimentar" element={<MovimentarPage />} />
+
+        {/* Rota de Notificações */}
+        <Route path="/notificacoes" element={<NotificacoesPage />} />
+
         <Route path="/loja" element={
             <div className="p-10 text-center">
                 <h1 className="text-2xl font-bold">Loja em Construção 🚧</h1>
                 <a href="/dashboard" className="text-blue-500 underline">Voltar</a>
             </div>
         } />
-        
         
         {/* Rota 404 redireciona para login */}
         <Route path="*" element={<Navigate to="/" />} />

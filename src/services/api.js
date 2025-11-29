@@ -15,4 +15,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response, // Se der certo, só passa
+  (error) => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      console.warn("Token inválido ou expirado. Deslogando...");
+      
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
+      window.location.href = '/'; 
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

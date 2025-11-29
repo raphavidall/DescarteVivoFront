@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, X, Send, User } from 'lucide-react';
+import { MapPin, X, Send, User, Lock } from 'lucide-react'; // <--- ADICIONEI O LOCK
 import api from '../services/api';
-import { PACOTE_STATUS } from '../utils/constants'; // Vamos criar esse arquivo no Front tbm?
+import { PACOTE_STATUS } from '../utils/constants';
 
-// URL base para carregar as imagens (ajuste se sua porta for diferente)
 const API_URL = "http://localhost:3000";
 
 const PacoteDetalhes = ({ pacote, onClose, onUpdate }) => {
   const [mensagens, setMensagens] = useState([]);
   const [novaMensagem, setNovaMensagem] = useState("");
   const [loadingAction, setLoadingAction] = useState(false);
+  const [pacoteAtual, setPacoteAtual] = useState(pacote);
   
   const user = JSON.parse(localStorage.getItem('user'));
   const userId = user?.id;
 
-  // Lógica de Papéis (Quem sou eu nesse pacote?)
   const isOwner = userId === pacote.id_ponto_descarte;
-  const isDestino = userId === pacote.id_ponto_destino;
+  const isDestino = userId === pacote.id_ponto_destino; 
   const isColetor = userId === pacote.id_ponto_coleta;
+
   const isVisitor = !isOwner && !isDestino && !isColetor;
 
-  // Carregar Mensagens
+  // Função para recarregar dados deste pacote específico
+  const refreshDetails = async () => {
+    try {
+        const res = await api.get(`/pacotes/${pacote.id}`);
+        setPacoteAtual(res.data); // Atualiza o visual
+    } catch (err) { console.error("Erro ao atualizar"); }
+};
+
   useEffect(() => {
     async function fetchMensagens() {
       try {
@@ -33,15 +40,12 @@ const PacoteDetalhes = ({ pacote, onClose, onUpdate }) => {
     fetchMensagens();
   }, [pacote.id]);
 
-  // Enviar Mensagem
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!novaMensagem.trim()) return;
-
     try {
       await api.post(`/pacotes/${pacote.id}/mensagens`, { mensagem: novaMensagem });
       setNovaMensagem("");
-      // Recarrega mensagens
       const res = await api.get(`/pacotes/${pacote.id}/mensagens`);
       setMensagens(res.data);
     } catch (error) {
@@ -49,155 +53,202 @@ const PacoteDetalhes = ({ pacote, onClose, onUpdate }) => {
     }
   };
 
-  // AÇÃO PRINCIPAL (Mudança de Status)
   const handleStatusChange = async (novoStatus, extraData = {}) => {
     try {
       setLoadingAction(true);
-      
-      // Monta o payload
       const payload = { status: novoStatus, ...extraData };
       
-      // Regras específicas de ID
-      if (novoStatus === 'AGUARDANDO_APROVACAO') payload.id_ponto_destino = userId;
-      if (novoStatus === 'AGUARDANDO_RETIRADA') payload.id_ponto_coleta = userId;
+      if (novoStatus === PACOTE_STATUS.AGUARDANDO_APROVACAO) payload.id_ponto_destino = userId;
+      if (novoStatus === PACOTE_STATUS.AGUARDANDO_RETIRADA) payload.id_ponto_coleta = userId;
 
       await api.put(`/pacotes/${pacote.id}`, payload);
-      
-      alert("Ação realizada com sucesso!");
-      onUpdate(); // Avisa a página pai para recarregar
-      onClose();  // Fecha o modal
-
+    //   alert("Status atualizado com sucesso! ✅");
+      onUpdate();
+      await refreshDetails();
+    //   onClose();
+      setNovaMensagem("Status atualizado com sucesso! ✅"); 
+      setTimeout(() => setNovaMensagem(""), 3000);
     } catch (error) {
-      const msg = error.response?.data?.message || "Erro na ação.";
-      alert(msg);
+        console.error(error);
+        const msg = error.response?.data?.message || "Erro na ação.";
+        alert(msg);
     } finally {
       setLoadingAction(false);
     }
   };
 
-  // --- O CÉREBRO: RENDERIZAÇÃO DOS BOTÕES ---
+  // --- COMPONENTE VISUAL: BOTÃO BLOQUEADO (STATUS) ---
+  const LockedStatus = ({ text }) => (
+    <div className="w-full bg-gray-600 text-white font-bold text-xl py-4 rounded-xl flex items-center justify-center gap-3 shadow-inner opacity-90 cursor-not-allowed select-none">
+        <span>{text}</span>
+        <Lock size={20} className="text-gray-300" />
+    </div>
+  );
+
+  // --- O CÉREBRO: DECIDINDO O QUE MOSTRAR ---
   const renderActionButtons = () => {
-    const status = pacote.status;
+    const status = pacoteAtual.status;
     
-    // 1. Visitante querendo comprar (Passo 2)
-    if (isVisitor && status === 'DISPONIVEL') {
+    // ======================================================
+    // ESTADO 1: DISPONÍVEL (Ninguém pegou ainda)
+    // ======================================================
+    if (status === PACOTE_STATUS.DISPONIVEL) {
+        if (isOwner) return <LockedStatus text="Aguardando Interessados" />;
+        
+        // Qualquer outro usuário pode solicitar
         return (
             <button 
-                onClick={() => handleStatusChange('AGUARDANDO_APROVACAO')}
+                onClick={() => handleStatusChange(PACOTE_STATUS.AGUARDANDO_APROVACAO)}
                 disabled={loadingAction}
-                className="w-full bg-black text-white font-black text-xl py-4 rounded-xl hover:bg-gray-800"
+                className="w-full bg-black text-white font-black text-xl py-4 rounded-xl hover:bg-gray-800 transition shadow-lg"
             >
                 Solicitar Destinação (Comprar)
             </button>
         );
     }
 
-    // 2. Dono aprovando venda (Passo 3)
-    if (isOwner && status === 'AGUARDANDO_APROVACAO') {
+    // ======================================================
+    // ESTADO 2: AGUARDANDO APROVAÇÃO (Dono tem que aceitar)
+    // ======================================================
+    if (status === PACOTE_STATUS.AGUARDANDO_APROVACAO) {
+        if (isOwner) {
+            return (
+                <div className="flex gap-3">
+                    <button 
+                        onClick={() => handleStatusChange(PACOTE_STATUS.AGUARDANDO_COLETA)}
+                        className="flex-1 bg-brand-green text-white font-black text-lg py-3 rounded-xl hover:brightness-110 shadow-md"
+                    >
+                        Aprovar
+                    </button>
+                    <button 
+                        // Ao recusar, volta para DISPONIVEL (limpa o destino no backend)
+                        onClick={() => handleStatusChange(PACOTE_STATUS.DISPONIVEL)} 
+                        className="flex-1 bg-red-600 text-white font-black text-lg py-3 rounded-xl hover:brightness-110 shadow-md"
+                    >
+                        Recusar
+                    </button>
+                </div>
+            );
+        }
+        if (isDestino) return <LockedStatus text="Aguardando Aprovação do Dono" />;
+        return <LockedStatus text="Em Negociação com outro usuário" />;
+    }
+
+    // ======================================================
+    // ESTADO 3: AGUARDANDO COLETA (Dono aceitou, Destino decide frete)
+    // ======================================================
+    if (status === PACOTE_STATUS.AGUARDANDO_COLETA) {
+        if (isDestino) {
+            return (
+                <div className="flex flex-col gap-2">
+                    <button 
+                        onClick={() => handleStatusChange(PACOTE_STATUS.DESTINADO)}
+                        className="w-full bg-black text-white font-black text-lg py-3 rounded-xl hover:bg-gray-800"
+                    >
+                        Já coletei pessoalmente
+                    </button>
+                    <button 
+                        onClick={() => handleStatusChange(PACOTE_STATUS.A_COLETAR)}
+                        className="w-full bg-brand-orange text-white font-black text-lg py-3 rounded-xl hover:brightness-110"
+                    >
+                        Solicitar Motorista
+                    </button>
+                </div>
+            );
+        }
+        if (isOwner) return <LockedStatus text="Aguardando Retirada pelo Destino" />;
+        return <LockedStatus text="Vendido - Aguardando Retirada" />;
+    }
+
+    // ======================================================
+    // ESTADO 4: A COLETAR (Aberto para Motoristas)
+    // ======================================================
+    if (status === PACOTE_STATUS.A_COLETAR) {
+        // Regra: Dono e Destino não podem ser o motorista terceirizado
+        if (!isOwner && !isDestino) {
+            return (
+                <button 
+                    onClick={() => handleStatusChange(PACOTE_STATUS.AGUARDANDO_RETIRADA)}
+                    className="w-full bg-brand-orange text-white font-black text-xl py-4 rounded-xl hover:brightness-110 shadow-lg"
+                >
+                    Aceitar Corrida (Ser Coletor)
+                </button>
+            );
+        }
+        if (isDestino) return <LockedStatus text="Procurando Motorista..." />;
+        if (isOwner) return <LockedStatus text="Aguardando Coleta Terceirizada" />;
+    }
+
+    // ======================================================
+    // ESTADO 5: AGUARDANDO RETIRADA (Motorista aceitou e está indo)
+    // ======================================================
+    if (status === PACOTE_STATUS.AGUARDANDO_RETIRADA) {
+        if (isColetor) {
+            return (
+                 <button 
+                    onClick={() => handleStatusChange(PACOTE_STATUS.EM_TRANSPORTE)}
+                    className="w-full bg-brand-orange text-white font-black text-xl py-4 rounded-xl hover:brightness-110 shadow-lg"
+                >
+                    Confirmar Retirada (Pacote em mãos)
+                </button>
+            );
+        }
+        if (isDestino) return <LockedStatus text="Motorista à caminho da coleta" />;
+        if (isOwner) return <LockedStatus text="Aguardando Motorista retirar" />;
+        return <LockedStatus text="Coleta em andamento" />;
+    }
+
+    // ======================================================
+    // ESTADO 6: EM TRANSPORTE (Pacote à caminho)
+    // ======================================================
+    if (status === PACOTE_STATUS.EM_TRANSPORTE) {
+        if (isDestino) {
+             return (
+                 <button 
+                    onClick={() => handleStatusChange(PACOTE_STATUS.DESTINADO)}
+                    className="w-full bg-brand-green text-white font-black text-xl py-4 rounded-xl hover:brightness-110 shadow-lg"
+                >
+                    Confirmar Recebimento (Pacote chegou)
+                </button>
+            );
+        }
+        if (isColetor) return <LockedStatus text="Em trânsito para o destino" />;
+        if (isOwner) return <LockedStatus text="Pacote à caminho do destino" />;
+    }
+
+    // ======================================================
+    // ESTADO FINAL: DESTINADO
+    // ======================================================
+    if (status === PACOTE_STATUS.DESTINADO) {
         return (
-            <div className="flex gap-2">
-                <button 
-                    onClick={() => handleStatusChange('AGUARDANDO_COLETA')}
-                    className="flex-1 bg-brand-green text-white font-black text-lg py-3 rounded-xl hover:brightness-110"
-                >
-                    Aprovar
-                </button>
-                <button 
-                    onClick={() => handleStatusChange('DISPONIVEL')} // Recusa
-                    className="flex-1 bg-red-500 text-white font-black text-lg py-3 rounded-xl hover:brightness-110"
-                >
-                    Recusar
-                </button>
+            <div className="w-full bg-green-600 text-white font-black text-xl py-4 rounded-xl flex items-center justify-center gap-2">
+                <span>Pacote Finalizado</span>
+                <span className="text-2xl">✅</span>
             </div>
         );
     }
 
-    // 3. Comprador decidindo como levar (Passo 4 ou 5)
-    if (isDestino && status === 'AGUARDANDO_COLETA') {
-        return (
-            <div className="flex flex-col gap-2">
-                <button 
-                    onClick={() => handleStatusChange('DESTINADO')} // Coleta Pessoal
-                    className="w-full bg-black text-white font-black text-lg py-3 rounded-xl"
-                >
-                    Já coletei (Finalizar)
-                </button>
-                <button 
-                    onClick={() => handleStatusChange('A_COLETAR')} // Terceirizar
-                    className="w-full bg-brand-orange text-white font-black text-lg py-3 rounded-xl"
-                >
-                    Solicitar Motorista
-                </button>
-            </div>
-        );
-    }
-
-    // 4. Visitante/Motorista aceitando frete (Passo 6)
-    // Nota: O dono não pode ser o motorista do próprio pacote
-    if (!isOwner && !isDestino && status === 'A_COLETAR') {
-        return (
-            <button 
-                onClick={() => handleStatusChange('AGUARDANDO_RETIRADA')}
-                className="w-full bg-brand-orange text-white font-black text-xl py-4 rounded-xl"
-            >
-                Aceitar Corrida (Ser Coletor)
-            </button>
-        );
-    }
-
-    // 5. Coletor indicando que pegou (Passo 7)
-    if (isColetor && status === 'AGUARDANDO_RETIRADA') {
-        return (
-             <button 
-                onClick={() => handleStatusChange('EM_TRANSPORTE')}
-                className="w-full bg-brand-orange text-white font-black text-xl py-4 rounded-xl"
-            >
-                Confirmar Retirada
-            </button>
-        );
-    }
-
-    // 6. Destino confirmando recebimento (Passo 8)
-    if (isDestino && status === 'EM_TRANSPORTE') {
-         return (
-             <button 
-                onClick={() => handleStatusChange('DESTINADO')}
-                className="w-full bg-brand-green text-white font-black text-xl py-4 rounded-xl"
-            >
-                Confirmar Recebimento
-            </button>
-        );
-    }
-
-    // Status informativos (sem ação)
-    if (status === 'DESTINADO') {
-        return <div className="bg-gray-200 text-gray-500 font-bold text-center py-3 rounded-xl">Pacote Finalizado</div>
-    }
-
-    return <div className="text-gray-400 text-sm text-center">Aguardando ação de outro usuário...</div>;
+    return <LockedStatus text="Status Desconhecido" />;
   };
 
-  // --- RENDERIZACAO VISUAL ---
+  // --- RENDER ---
   return (
     <div className="flex flex-col lg:flex-row gap-8">
         
         {/* LADO ESQUERDO: Imagem */}
         <div className="w-full lg:w-5/12">
-            <div className="relative w-full h-80 bg-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                 {/* Tag Material */}
-                 <div className="absolute top-0 right-4 bg-black text-white font-bold px-6 py-2 rounded-b-lg text-sm uppercase z-10">
-                    {pacote.material?.nome}
+            <div className="relative w-full h-80 bg-gray-200 rounded-2xl overflow-hidden shadow-sm group">
+                 <div className="absolute top-0 right-4 bg-black text-white font-bold px-6 py-2 rounded-b-lg text-sm uppercase z-10 shadow-md">
+                    {pacoteAtual.material?.nome}
                 </div>
-
-                {pacote.imagemUrl ? (
+                {pacoteAtual.imagemUrl ? (
                     <img 
-                        src={`${API_URL}/uploads/${pacote.imagemUrl}`} 
-                        alt={pacote.titulo} 
+                        src={`${API_URL}/uploads/${pacoteAtual.imagemUrl}`} 
+                        alt={pacoteAtual.titulo} 
                         className="w-full h-full object-cover"
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center bg-brand-green">
-                        {/* Placeholder verde igual ao seu design */}
                         <span className="text-white opacity-20 text-6xl">📦</span>
                     </div>
                 )}
@@ -207,63 +258,59 @@ const PacoteDetalhes = ({ pacote, onClose, onUpdate }) => {
         {/* LADO DIREITO: Detalhes */}
         <div className="w-full lg:w-7/12 flex flex-col gap-4">
             
-            {/* Header */}
             <div className="flex justify-between items-start">
                 <div>
-                    <span className="text-gray-400 text-xs uppercase tracking-wider block mb-1">ID #{pacote.id.toString().padStart(6, '0')}</span>
-                    <h2 className="text-3xl font-black uppercase leading-tight mb-1">{pacote.titulo}</h2>
-                    <p className="text-gray-600 font-medium">@{pacote.pontoDescarte?.nome_completo}</p>
+                    <span className="text-gray-400 text-xs uppercase tracking-wider block mb-1">ID #{pacoteAtual.id.toString().padStart(6, '0')}</span>
+                    <h2 className="text-3xl font-black uppercase leading-tight mb-1">{pacoteAtual.titulo}</h2>
+                    <p className="text-gray-600 font-medium">@{pacoteAtual.pontoDescarte?.nome_completo}</p>
                     <div className="flex items-center gap-1 text-gray-500 mt-1">
                         <MapPin size={16} />
-                        <span>{pacote.localizacao?.bairro || "Fortaleza"}</span>
+                        <span>{pacoteAtual.localizacao?.bairro || "Fortaleza"}</span>
                     </div>
                 </div>
 
-                {/* Preço */}
-                <div className={`w-20 h-20 rounded-full flex items-center justify-center font-black text-xl text-white shadow-lg ${pacote.valor_pacote_moedas === 0 ? 'bg-brand-green' : 'bg-black'}`}>
-                    {pacote.valor_pacote_moedas === 0 ? 'Free' : `$${pacote.valor_pacote_moedas}`}
+                <div className={`w-20 h-20 rounded-full flex items-center justify-center font-black text-xl text-white shadow-lg border-4 border-white ${pacoteAtual.valor_pacote_moedas === 0 ? 'bg-brand-green' : 'bg-black'}`}>
+                    {pacoteAtual.valor_pacote_moedas === 0 ? 'Free' : `$${pacoteAtual.valor_pacote_moedas.toFixed(0)}`}
                 </div>
             </div>
 
-            {/* Ações (Botões Dinâmicos) */}
-            <div className="py-4">
+            {/* --- ÁREA DE AÇÃO --- */}
+            <div className="py-2">
                 {renderActionButtons()}
             </div>
+            {/* -------------------- */}
 
-            {/* Descrição */}
             <div>
                 <h3 className="font-black text-lg mb-1">Descrição</h3>
-                <p className="text-gray-600 leading-relaxed text-sm bg-gray-100 p-4 rounded-xl">
-                    {pacote.descricao || "Sem descrição informada."}
+                <p className="text-gray-600 leading-relaxed text-sm bg-gray-100 p-4 rounded-xl min-h-[80px]">
+                    {pacoteAtual.descricao || "Sem descrição informada."}
                 </p>
             </div>
 
-            {/* Área de Comentários */}
-            <div className="mt-4 border-t pt-4">
+            <div className="mt-2 border-t pt-4">
                 <h3 className="font-black text-lg mb-3">Comentários</h3>
-                
-                {/* Lista */}
-                <div className="max-h-40 overflow-y-auto space-y-3 mb-4 pr-2">
-                    {mensagens.length === 0 && <p className="text-gray-400 text-sm">Seja o primeiro a comentar.</p>}
+                <div className="max-h-32 overflow-y-auto space-y-3 mb-4 pr-2 custom-scrollbar">
+                    {mensagens.length === 0 && <p className="text-gray-400 text-sm italic">Seja o primeiro a comentar.</p>}
                     {mensagens.map(msg => (
-                        <div key={msg.id} className="bg-gray-50 p-3 rounded-lg text-sm">
-                            <span className="font-bold text-black mr-2">Usuário {msg.id_remetente}:</span>
+                        <div key={msg.id} className="bg-gray-50 p-3 rounded-lg text-sm border border-gray-100">
+                            <span className="font-bold text-black mr-2">
+                                {msg.id_remetente === userId ? "Você" : `Usuário ${msg.id_remetente}`}:
+                            </span>
                             <span className="text-gray-700">{msg.mensagem}</span>
                         </div>
                     ))}
                 </div>
 
-                {/* Input */}
                 <form onSubmit={handleSendMessage} className="relative">
                     <input 
                         type="text"
-                        placeholder="Digite seu comentário ou dúvida..."
-                        className="w-full bg-white border border-gray-300 p-4 pr-12 rounded-xl outline-none focus:ring-2 focus:ring-black"
+                        placeholder="Digite seu comentário..."
+                        className="w-full bg-white border border-gray-300 p-3 pr-12 rounded-xl outline-none focus:ring-2 focus:ring-black text-sm transition-shadow"
                         value={novaMensagem}
                         onChange={e => setNovaMensagem(e.target.value)}
                     />
-                    <button type="submit" className="absolute right-2 top-2 bottom-2 bg-black text-white px-4 rounded-lg hover:bg-gray-800 transition">
-                        <Send size={18} />
+                    <button type="submit" className="absolute right-2 top-1.5 bottom-1.5 bg-black text-white px-3 rounded-lg hover:bg-gray-800 transition flex items-center justify-center">
+                        <Send size={16} />
                     </button>
                 </form>
             </div>
