@@ -85,15 +85,16 @@ const Navbar = () => {
 
                 {/* 3. Menu Central */}
                 <div className="hidden md:flex items-center flex-1 max-w-xl mx-4">
-                    <Link to="/dashboard" className={getLinkClass('/dashboard')}>Novidades</Link>
-                    <Link to="/movimentar" className={getLinkClass('/movimentar')}>Movimentar</Link>
-                    <Link to="/loja" className={getLinkClass('/loja')}>Loja</Link>
+                    <Link to="/dashboard" id="nav-novidades" className={getLinkClass('/dashboard')}>Novidades</Link>
+                    <Link to="/movimentar" id="nav-movimentar" className={getLinkClass('/movimentar')}>Movimentar</Link>
+                    <Link to="/loja" id="nav-loja" className={getLinkClass('/loja')}>Loja</Link>
                 </div>
 
                 {/* 4. Área Direita */}
                 <div className="flex items-center gap-2 md:gap-4">
 
                     <button
+                        id="nav-notificacoes"
                         onClick={() => navigate('/notificacoes')}
                         className="relative flex items-center gap-2 bg-black text-white p-2 md:px-4 md:py-2 rounded-full font-medium hover:bg-gray-800 transition"
                     >
@@ -108,6 +109,7 @@ const Navbar = () => {
 
                     {/* --- MUDANÇA 2: Botão de Perfil Dinâmico --- */}
                     <button
+                        id="nav-perfil"
                         onClick={() => navigate('/perfil')}
                         className="bg-brand-green flex items-center gap-2 px-2 py-1 rounded-full text-brand-dark hover:brightness-110 transition cursor-pointer"
                         title="Meu Perfil"

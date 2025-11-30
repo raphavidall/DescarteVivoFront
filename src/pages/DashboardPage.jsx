@@ -1,14 +1,87 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import DashboardHero from '../components/DashboardHero';
 import InfoCard from '../components/InfoCard';
+import Onboarding from '../components/Onboarding';
 
 const DashboardPage = () => {
+    const [showTutorial, setShowTutorial] = useState(false);
+
+    // Lista de Passos (Baseada nos seus prints)
+    const tutorialSteps = [
+        {
+            targetId: null, // Sem foco (Boas vindas)
+            title: "Bem-vindo ao Descarte Vivo Fortaleza!",
+            content: "Eu sou o Calu! Talvez você tenha algumas dúvidas, então vou resumir o que você pode fazer aqui: Você pode descartar e coletar pacotes, usar seu saldo na nossa loja e muito mais."
+        },
+        {
+            targetId: 'nav-novidades',
+            title: "Novidades",
+            content: "Aqui você encontra conteúdos, eventos e projetos que lhe ajudarão a aprender mais sobre Descartar com intenção e Destinar com propósito."
+        },
+        {
+            targetId: 'nav-movimentar',
+            title: "Movimentar",
+            content: "Aqui você encontra pacotes de materiais reaproveitáveis descartados por outras pessoas. Você pode descartar um novo pacote ou solicitar uma coleta."
+        },
+        {
+            targetId: 'nav-loja',
+            title: "Loja",
+            content: "Aqui você pode conhecer trabalhos e serviços incríveis que são gerados a partir de materiais reaproveitados e estão disponíveis para compra com seu saldo."
+        },
+        {
+            targetId: 'nav-notificacoes',
+            title: "Notificações",
+            content: "Aqui você visualiza todas as ações que precisam da sua atenção. Fique atento as solicitações de coleta para garantir uma boa experiência."
+        },
+        {
+            targetId: 'nav-perfil',
+            title: "Perfil",
+            content: "Aqui você pode ver seu saldo, seu extrato de transações, sua rede de amigos e o histórico dos seus pacotes movimentados."
+        }
+    ];
+
+    // Verifica se é a primeira vez
+    useEffect(() => {
+        const hasSeen = localStorage.getItem('hasSeenTutorial');
+        if (!hasSeen) {
+            setShowTutorial(true);
+        }
+    }, []);
+
+    const finishTutorial = () => {
+        localStorage.setItem('hasSeenTutorial', 'true');
+        setShowTutorial(false);
+    };
+
+    // Botão para rever o tutorial (aquele verde do banner)
+    const handleReplayTutorial = () => {
+        setShowTutorial(true);
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
             <Navbar />
-            <DashboardHero />
+            <DashboardHero
+                customButton={
+                    <button
+                        onClick={handleReplayTutorial}
+                        className="bg-brand-green text-white font-black uppercase text-lg px-8 py-3 rounded-lg shadow-lg hover:brightness-110 transition animate-pulsar"
+                    >
+                        Conheça a Descarte Vivo
+                    </button>
+                }
+            />
+
+            {/* --- COMPONENTE DE ONBOARDING --- */}
+            {showTutorial && (
+                <Onboarding
+                    steps={tutorialSteps}
+                    onFinish={finishTutorial}
+                    onSkip={finishTutorial}
+                />
+            )}
 
             <main className="container mx-auto px-4 md:px-6">
 

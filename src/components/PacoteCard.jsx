@@ -1,8 +1,5 @@
 import React from 'react';
 import { MapPin } from 'lucide-react';
-import { BASE_URL } from '../services/api';
-
-// const API_URL = "http://192.168.1.15:3000";
 
 const PacoteCard = ({ pacote, onClick }) => {
   const materialNome = pacote.material?.nome || "Material";
