@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import bannerBg from '../assets/banner-bg.png';
+import bannerBg from '../assets/banner-bg.svg';
 
 const DashboardHero = ({ customButton }) => {
   const [expanded, setExpanded] = useState(true);

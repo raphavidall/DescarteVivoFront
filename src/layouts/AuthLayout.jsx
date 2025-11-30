@@ -1,5 +1,5 @@
 import React from 'react';
-import bgCalu from '../assets/bg-calu.png';
+import bgCalu from '../assets/bg-calu.svg';
 
 const AuthLayout = ({ children }) => {
   return (

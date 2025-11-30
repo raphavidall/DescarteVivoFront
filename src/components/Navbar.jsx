@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bell, Menu, X } from 'lucide-react';
 import api from '../services/api';
+import logo from '../assets/logo-nav.svg';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -75,9 +76,11 @@ const Navbar = () => {
 
                 {/* 2. Logo */}
                 <div className="flex items-center">
-                    <h1 className="font-black text-lg md:text-xl uppercase tracking-tighter">
-                        Descarte-Vivo
-                    </h1>
+                    <img
+                        src={logo}
+                        alt="logo-descarte-vivo"
+                        className="logo-image-descarte-vivo"
+                    />
                 </div>
 
                 {/* 3. Menu Central */}
