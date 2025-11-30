@@ -7,6 +7,7 @@ import MovimentarPage from './pages/MovimentarPage';
 import NotificacoesPage from './pages/NotificacoesPage';
 import ProfilePage from './pages/ProfilePage';
 import ExtratoPage from './pages/ExtratoPage';
+import LojaPage from './pages/LojaPage';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         {/* Rotas de Login */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
-        
+
         {/* Rota de Cadastro */}
         <Route path="/register" element={<RegisterPage />} />
 
@@ -26,19 +27,15 @@ function App() {
         {/* Rota de Notificações */}
         <Route path="/notificacoes" element={<NotificacoesPage />} />
 
-        <Route path="/loja" element={
-            <div className="p-10 text-center">
-                <h1 className="text-2xl font-bold">Loja em Construção 🚧</h1>
-                <a href="/dashboard" className="text-blue-500 underline">Voltar</a>
-            </div>
-        } />
-
         {/* Rota de Perfil */}
         <Route path="/perfil" element={<ProfilePage />} />
 
         {/* Rota de Extrato */}
         <Route path="/extrato" element={<ExtratoPage />} />
-        
+
+        {/* Rota de Loja */}
+        <Route path="/loja" element={<LojaPage />} />
+
         {/* Rota 404 redireciona para login */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

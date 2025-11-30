@@ -5,7 +5,7 @@ import NotificationCard from '../components/NotificationCard';
 import Modal from '../components/Modal';
 import PacoteDetalhes from '../components/PacoteDetalhes';
 import api from '../services/api';
-import { X } from 'lucide-react'; // <--- Importe o ícone
+import { X, BellOff } from 'lucide-react';
 
 const NotificacoesPage = () => {
     const [notificacoes, setNotificacoes] = useState([]);
@@ -111,19 +111,38 @@ const NotificacoesPage = () => {
             <main className="container mx-auto px-4 md:px-6 py-8 max-w-4xl">
                 <h2 className="text-3xl font-black uppercase mb-8">Notificações</h2>
 
-                {loading ? <div className="text-center py-10">Carregando...</div> : (
-                    <div className="space-y-4">
-                        {notificacoes.map(notif => (
-                            <NotificationCard
-                                key={notif.id}
-                                notificacao={notif}
-                                onAccept={() => handleRequestAccept(notif)}
-                                onReject={() => handleRequestReject(notif)}
-                                // Agora chamamos a função real
-                                onView={() => handleViewPackage(notif.id_pacote)}
-                            />
-                        ))}
-                    </div>
+                {loading ? (
+                    <div className="text-center py-20 text-gray-500">Carregando...</div>
+                ) : (
+                    <>
+                        {/* --- ESTADO VAZIO (EMPTY STATE) --- */}
+                        {notificacoes.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in">
+                                <div className="bg-gray-200 p-8 rounded-full mb-6 shadow-sm">
+                                    <BellOff size={48} className="text-gray-400" />
+                                </div>
+                                <h3 className="text-2xl font-black text-gray-800 mb-2">
+                                    Tudo limpo por aqui!
+                                </h3>
+                                <p className="text-gray-500 max-w-xs mx-auto leading-relaxed">
+                                    Você não tem novas notificações no momento. Quando houver novidades sobre seus pacotes, elas aparecerão aqui.
+                                </p>
+                            </div>
+                        ) : (
+                            /* LISTA DE NOTIFICAÇÕES */
+                            <div className="space-y-4">
+                                {notificacoes.map(notif => (
+                                    <NotificationCard
+                                        key={notif.id}
+                                        notificacao={notif}
+                                        onAccept={() => handleRequestAccept(notif)}
+                                        onReject={() => handleRequestReject(notif)}
+                                        onView={() => handleViewPackage(notif.id_pacote)}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </>
                 )}
             </main>
 
