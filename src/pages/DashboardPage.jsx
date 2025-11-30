@@ -4,9 +4,11 @@ import Navbar from '../components/Navbar';
 import DashboardHero from '../components/DashboardHero';
 import InfoCard from '../components/InfoCard';
 import Onboarding from '../components/Onboarding';
+import WelcomeModal from '../components/WelcomeModal';
 
 const DashboardPage = () => {
     const [showTutorial, setShowTutorial] = useState(false);
+    const [showWelcomeReward, setShowWelcomeReward] = useState(false); // <--- Novo Estado
 
     // Lista de Passos (Baseada nos seus prints)
     const tutorialSteps = [
@@ -44,15 +46,34 @@ const DashboardPage = () => {
 
     // Verifica se é a primeira vez
     useEffect(() => {
-        const hasSeen = localStorage.getItem('hasSeenTutorial');
-        if (!hasSeen) {
+        const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+        const hasReceivedReward = localStorage.getItem('hasReceivedReward');
+
+        // Se nunca viu o tutorial, mostra ele primeiro
+        if (!hasSeenTutorial) {
             setShowTutorial(true);
+        }
+
+        // Se já viu o tutorial, mas (por algum bug ou refresh) não viu o prêmio, mostra o prêmio
+        else if (!hasReceivedReward) {
+            setShowWelcomeReward(true);
         }
     }, []);
 
+    // Quando o tutorial termina (ou é pulado)
     const finishTutorial = () => {
         localStorage.setItem('hasSeenTutorial', 'true');
         setShowTutorial(false);
+
+        // Imediatamente abre o prêmio
+        setShowWelcomeReward(true);
+    };
+
+    // Quando fecha o modal de prêmio
+    const finishReward = () => {
+        localStorage.setItem('hasReceivedReward', 'true');
+        setShowWelcomeReward(false);
+        // O botão dentro do modal já faz o navigate, aqui é só pra limpar o estado visual
     };
 
     // Botão para rever o tutorial (aquele verde do banner)
@@ -74,13 +95,18 @@ const DashboardPage = () => {
                 }
             />
 
-            {/* --- COMPONENTE DE ONBOARDING --- */}
+            {/* 1. ONBOARDING (Prioridade 1) */}
             {showTutorial && (
                 <Onboarding
-                    steps={tutorialSteps}
+                    steps={TUTORIAL_STEPS}
                     onFinish={finishTutorial}
                     onSkip={finishTutorial}
                 />
+            )}
+
+            {/* 2. RECOMPENSA (Prioridade 2 - Só aparece se tutorial não estiver na tela) */}
+            {!showTutorial && showWelcomeReward && (
+                <WelcomeModal onClose={finishReward} />
             )}
 
             <main className="container mx-auto px-4 md:px-6">

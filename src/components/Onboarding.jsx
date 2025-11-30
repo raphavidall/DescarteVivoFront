@@ -8,23 +8,38 @@ const Onboarding = ({ steps, onFinish, onSkip }) => {
     const step = steps[currentStep];
 
     // Calcula a posição do destaque
+    // EFEITO 1: Travar o Scroll (Roda apenas na montagem/desmontagem)
     useEffect(() => {
+        // Ao abrir o componente, trava
+        document.body.style.overflow = 'hidden';
+
+        // Ao fechar o componente, destrava
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []); // Array vazio = roda só uma vez
+
+    // EFEITO 2: Calcular Posição (Roda quando o 'step' muda)
+    useEffect(() => {
+        // Seguranças
+        if (!step) return;
+
         if (!step.targetId) {
-            // Se não tem target (ex: passo de boas-vindas), centraliza
             setPosition(null);
-            return;
+            return; // Esse return agora é seguro, pois este efeito não tem cleanup
         }
 
         const element = document.getElementById(step.targetId);
         if (element) {
             const rect = element.getBoundingClientRect();
-            // Adiciona um padding visual
             setPosition({
                 top: rect.top - 10,
                 left: rect.left - 10,
                 width: rect.width + 20,
                 height: rect.height + 20,
             });
+        } else {
+            setPosition(null);
         }
     }, [currentStep, step]);
 

@@ -76,10 +76,10 @@ const ProfilePage = () => {
         <div className="min-h-screen bg-white flex flex-col">
             <Navbar />
 
-            <div className="flex flex-col-reverse md:flex-row flex-1">
+            <div className="flex flex-col-reverse justify-end md:flex-row md:justify-start flex-1">
 
                 {/* --- COLUNA ESQUERDA (Conteúdo) --- */}
-                <div className="w-full md:w-2/3 flex flex-col border-r border-gray-100">
+                <div className="w-full md:flex-1 flex flex-col border-r border-gray-100">
 
                     {/* Barra Preta */}
                     <div className="bg-black text-white py-3 md:py-5 px-2 md:px-8">
@@ -110,7 +110,7 @@ const ProfilePage = () => {
                 </div>
 
                 {/* --- COLUNA DIREITA (Perfil) --- */}
-                <aside className="w-full md:w-1/3 bg-brand-green p-6 md:p-8 md:min-h-[calc(100vh-80px)] flex flex-col">
+                <aside className="w-full md:w-1/4 bg-brand-green p-6 md:p-8 md:min-h-[calc(100vh-80px)] flex flex-col">
 
                     <div className="grid grid-cols-2 gap-4 items-center md:flex md:flex-col md:items-center md:text-center md:flex-1">
 
@@ -139,7 +139,7 @@ const ProfilePage = () => {
 
                             <button
                                 onClick={() => navigate('/extrato')}
-                                className="underline text-brand-dark font-bold hover:text-white transition md:mb-auto text-sm md:text-lg uppercase tracking-wide"
+                                className="underline text-white font-bold hover:text-brand-dark transition md:mb-auto text-sm md:text-lg uppercase tracking-wide"
                             >
                                 Ver Extrato
                             </button>
