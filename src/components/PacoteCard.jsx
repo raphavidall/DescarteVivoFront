@@ -60,7 +60,7 @@ const PacoteCard = ({ pacote, onClick }) => {
         <div className="w-full h-full bg-gray-50 flex items-center justify-center text-gray-300">
              {pacote.imagemUrl ? (
                 <img 
-                src={`${ BASE_URL }/uploads/${pacote.imagemUrl}`} 
+                src={pacote.imagemUrl}
                 alt={pacote.titulo} 
                 className="w-full h-full object-cover"
                 />

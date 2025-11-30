@@ -244,7 +244,7 @@ const PacoteDetalhes = ({ pacote, onClose, onUpdate }) => {
                 </div>
                 {pacoteAtual.imagemUrl ? (
                     <img 
-                        src={`${ BASE_URL }/uploads/${pacoteAtual.imagemUrl}`} 
+                        src={pacoteAtual.imagemUrl}
                         alt={pacoteAtual.titulo} 
                         className="w-full h-full object-cover"
                     />
