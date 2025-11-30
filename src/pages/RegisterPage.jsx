@@ -12,7 +12,7 @@ const RegisterPage = () => {
     senha: '',
     confirmarSenha: ''
   });
-  
+
   const navigate = useNavigate();
 
   // Função genérica para atualizar o estado quando o usuário digita
@@ -41,11 +41,11 @@ const RegisterPage = () => {
         senha: formData.senha,
         tipo_documento: 'CPF'
       });
-      
+
       alert("Cadastro realizado com sucesso! Faça login para continuar.");
       // Redireciona o usuário de volta para a tela de login
       navigate('/');
-      
+
     } catch (error) {
       console.error(error);
       // Tenta mostrar a mensagem de erro do backend, se houver
@@ -62,11 +62,11 @@ const RegisterPage = () => {
   return (
     <AuthLayout>
       <form onSubmit={handleRegister} className="space-y-5">
-        
+
         {/* Campo: Nome Completo */}
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
           <label className={labelStyle}>Nome</label>
-          <input 
+          <input
             type="text"
             name="nome_completo"
             required
@@ -79,7 +79,7 @@ const RegisterPage = () => {
         {/* Campo: E-mail */}
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
           <label className={labelStyle}>E-mail</label>
-          <input 
+          <input
             type="email"
             name="email"
             required
@@ -92,7 +92,7 @@ const RegisterPage = () => {
         {/* Campo: CPF */}
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
           <label className={labelStyle}>CPF</label>
-          <input 
+          <input
             type="text"
             name="documento"
             required
@@ -106,7 +106,7 @@ const RegisterPage = () => {
         {/* Campo: Senha */}
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
           <label className={labelStyle}>Senha</label>
-          <input 
+          <input
             type="password"
             name="senha"
             required
@@ -119,7 +119,7 @@ const RegisterPage = () => {
         {/* Campo: Confirmar Senha */}
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
           <label className={labelStyle}>Confirmar</label>
-          <input 
+          <input
             type="password"
             name="confirmarSenha"
             required
@@ -131,8 +131,8 @@ const RegisterPage = () => {
 
         {/* Botão CADASTRAR */}
         <div className="pt-4">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="w-full bg-black text-white font-black text-xl py-4 rounded-xl hover:bg-gray-800 transition-transform active:scale-95 shadow-lg"
           >
             Cadastrar Perfil

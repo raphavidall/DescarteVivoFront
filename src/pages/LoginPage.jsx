@@ -12,11 +12,11 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const response = await api.post('/auth/login', { email, senha });
-      
+
       localStorage.setItem('token', response.data.accessToken);
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
-      navigate('/dashboard'); 
+      navigate('/dashboard');
 
     } catch (error) {
       console.error(error);
@@ -27,14 +27,14 @@ const LoginPage = () => {
   return (
     <AuthLayout>
       <form onSubmit={handleLogin} className="space-y-6">
-        
+
         {/* Campo USUÁRIO */}
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
           <label className="w-24 font-black text-xl md:text-2xl whitespace-nowrap">
             Usuário
           </label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             required
             placeholder="Digite seu usuário (email)"
             className="flex-1 bg-brand-gray py-3 px-6 rounded-full outline-none focus:ring-2 focus:ring-black transition-all"
@@ -48,8 +48,8 @@ const LoginPage = () => {
           <label className="w-24 font-black text-xl md:text-2xl whitespace-nowrap">
             Senha
           </label>
-          <input 
-            type="password" 
+          <input
+            type="password"
             required
             placeholder="Digite sua senha"
             className="flex-1 bg-brand-gray py-3 px-6 rounded-full outline-none focus:ring-2 focus:ring-black transition-all"
@@ -67,8 +67,8 @@ const LoginPage = () => {
 
         {/* Botão LOGIN */}
         <div className="pt-4">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="w-full bg-black text-white font-black text-xl py-4 rounded-xl hover:bg-gray-800 transition-transform active:scale-95 shadow-lg"
           >
             Acessar Perfil

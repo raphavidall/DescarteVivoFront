@@ -25,13 +25,7 @@ const DashboardHero = ({ customButton }) => {
           <div className="flex items-center w-full max-w-4xl justify-between">
             {/* Mascote */}
             <div className="w-1/3 flex justify-center">
-              <div className="w-1/3 flex justify-center">
-                <img
-                  src={bannerBg}
-                  alt="Mascote Calu"
-                  className="w-40 h-40 object-contain"
-                />
-              </div>
+              <div className="w-40 h-40 bg-white/10 rounded-full flex items-center justify-center text-4xl">🦎</div>
             </div>
 
             {/* Texto e Botão */}
