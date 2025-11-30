@@ -53,7 +53,7 @@ const MovimentarPage = () => {
         customButton={
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-yellow-500 text-black font-black uppercase text-lg px-8 py-3 rounded-lg shadow-lg hover:bg-gray-800 transition z-10 relative"
+            className="bg-brand-green text-white font-black uppercase text-lg px-8 py-3 rounded-lg shadow-lg hover:brightness-110 transition"
           >
             Descartar um Pacote
           </button>

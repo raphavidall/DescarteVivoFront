@@ -24,7 +24,7 @@ const ProfilePage = () => {
                 const resUser = await api.get(`/usuarios/${localUser.id}`);
                 setUser(resUser.data);
 
-                const resPacotes = await api.get('/pacotes');
+                const resPacotes = await api.get('/pacotes/meus');
                 setPacotes(resPacotes.data);
             } catch (error) {
                 console.error("Erro ao carregar perfil");
