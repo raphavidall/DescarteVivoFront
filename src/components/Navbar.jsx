@@ -7,19 +7,46 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // ESTADOS
     const [unreadCount, setUnreadCount] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    // --- MUDANÇA 1: Estado para guardar os dados do usuário ---
+    const [userData, setUserData] = useState({
+        nome: 'User',
+        saldo: 0
+    });
+
+    // EFEITO: Carregar Notificações E Dados do Usuário
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
+        const localUser = JSON.parse(localStorage.getItem('user'));
+
+        if (token && localUser) {
+            // 1. Busca Notificações (Badge)
             api.get('/notificacoes').then(res => {
                 const count = res.data.filter(n => !n.lida && n.tipo === 'SOLICITACAO').length;
                 setUnreadCount(count);
             }).catch(err => console.log("Erro badge"));
-        }
-    }, [location.pathname]);
 
+            // 2. Busca Dados Frescos do Usuário (Saldo Atualizado)
+            // Buscamos na API em vez de usar só o localStorage, pois o saldo muda.
+            api.get(`/usuarios/${localUser.id}`).then(res => {
+                setUserData({
+                    nome: res.data.nome_completo,
+                    saldo: res.data.saldo_moedas
+                });
+            }).catch(err => {
+                // Fallback: Se der erro na API, usa o que tem no cache local
+                setUserData({
+                    nome: localUser.nome_completo,
+                    saldo: localUser.saldo_moedas
+                });
+            });
+        }
+    }, [location.pathname]); // Atualiza toda vez que muda de página
+
+    // FUNÇÕES AUXILIARES
     const handleLinkClick = (path) => {
         setIsMenuOpen(false);
         navigate(path);
@@ -27,10 +54,6 @@ const Navbar = () => {
 
     const getLinkClass = (path) => {
         const isActive = location.pathname === path;
-
-        // --- MUDANÇA AQUI: Adicionei 'flex-1' e 'w-full' ---
-        // flex-1: Faz o botão crescer para ocupar sua fatia (1/3)
-        // w-full: Garante que o clique funcione em toda a área
         const baseStyle = "py-2 font-medium transition text-center flex-1 w-full flex items-center justify-center";
 
         return isActive
@@ -57,11 +80,7 @@ const Navbar = () => {
                     </h1>
                 </div>
 
-                {/* 3. Menu Central (Desktop) */}
-                {/* --- MUDANÇA AQUI: Container Flexível --- */}
-                {/* flex-1: Ocupa o espaço disponível no meio */}
-                {/* max-w-xl: Limita a largura para os botões não ficarem quilométricos */}
-                {/* mx-4: Margem para desgrudar da logo e do perfil */}
+                {/* 3. Menu Central */}
                 <div className="hidden md:flex items-center flex-1 max-w-xl mx-4">
                     <Link to="/dashboard" className={getLinkClass('/dashboard')}>Novidades</Link>
                     <Link to="/movimentar" className={getLinkClass('/movimentar')}>Movimentar</Link>
@@ -84,24 +103,29 @@ const Navbar = () => {
                         )}
                     </button>
 
+                    {/* --- MUDANÇA 2: Botão de Perfil Dinâmico --- */}
                     <button
                         onClick={() => navigate('/perfil')}
                         className="bg-brand-green flex items-center gap-2 px-2 py-1 rounded-full text-brand-dark hover:brightness-110 transition cursor-pointer"
                         title="Meu Perfil"
                     >
+                        {/* Saldo Dinâmico */}
                         <div className="flex items-center gap-1 font-black text-lg">
                             <span className="text-xs border-2 border-black rounded-full w-4 h-4 flex items-center justify-center">B</span>
-                            48
+                            {/* Exibe o saldo formatado sem casas decimais (ex: 48) */}
+                            {userData.saldo ? userData.saldo.toFixed(0) : '0'}
                         </div>
 
+                        {/* Avatar Dinâmico (Usa o nome real) */}
                         <div className="bg-gray-300 rounded-full h-8 w-8 md:h-10 md:w-10 border-2 border-black flex items-center justify-center overflow-hidden">
                             <img
-                                src={`https://ui-avatars.com/api/?name=User&background=random`}
-                                alt="Perfil"
+                                src={`https://ui-avatars.com/api/?name=${userData.nome}&background=random`}
+                                alt={userData.nome}
                                 className="w-full h-full object-cover"
                             />
                         </div>
                     </button>
+                    {/* ------------------------------------------- */}
 
                 </div>
             </div>
