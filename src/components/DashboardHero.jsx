@@ -4,12 +4,22 @@ import bannerBg from '../assets/banner-bg.png';
 const DashboardHero = ({ customButton }) => {
   const [expanded, setExpanded] = useState(true);
 
+  const animationClass = "animate-pulsar";
+
+  let ActionButton;
+
   // Define qual botão usar (o padrão ou o customizado)
-  const ActionButton = customButton ? customButton : (
-    <button className="bg-brand-green text-white font-black uppercase text-lg px-8 py-3 rounded-lg shadow-lg hover:brightness-110 transition">
-      Conheça a Descarte Vivo
-    </button>
-  );
+  if (customButton) {
+    ActionButton = React.cloneElement(customButton, {
+      className: `${customButton.props.className || ''} ${animationClass}`
+    });
+  } else {
+    ActionButton = (
+      <button className={`bg-brand-green text-white font-black uppercase text-lg px-8 py-3 rounded-lg shadow-lg hover:brightness-110 transition ${animationClass}`}>
+          Conheça a Descarte Vivo
+      </button>
+    );
+  }
 
   return (
     <div
@@ -18,6 +28,13 @@ const DashboardHero = ({ customButton }) => {
     >
       <div className="absolute inset-0 bg-gradient-to-r from-brand-dark to-blue-900 opacity-90"></div>
 
+      {/* Imagem de Fundo */}
+      <img
+        src={bannerBg}
+        alt="Background"
+        className="absolute inset-0 w-full h-full object-cover opacity-90"
+      />
+
       <div className="relative z-10 container mx-auto h-full px-4">
 
         {/* CONTEÚDO EXPANDIDO (Mascote + Texto) */}
@@ -25,7 +42,7 @@ const DashboardHero = ({ customButton }) => {
           <div className="flex items-center w-full max-w-4xl justify-between">
             {/* Mascote */}
             <div className="w-1/3 flex justify-center">
-              <div className="w-40 h-40 bg-white/10 rounded-full flex items-center justify-center text-4xl">🦎</div>
+              {/* <div className="w-40 h-40 bg-white/10 rounded-full flex items-center justify-center text-4xl">🦎</div> */}
             </div>
 
             {/* Texto e Botão */}
@@ -43,7 +60,7 @@ const DashboardHero = ({ customButton }) => {
         {/* CONTEÚDO ENCOLHIDO (Apenas o Botão) */}
         <div className={`h-full flex items-center justify-center transition-opacity duration-500 ${expanded ? 'opacity-0 pointer-events-none absolute inset-0' : 'opacity-100'}`}>
           {/* Renderiza apenas o botão aqui quando encolhido */}
-          <div className="scale-75 origin-center">
+          <div className="w-full max-w-4xl mx-auto flex justify-end">
             {ActionButton}
           </div>
         </div>

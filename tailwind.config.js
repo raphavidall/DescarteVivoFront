@@ -17,6 +17,16 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'], // Vamos garantir essa fonte depois
+      },
+      keyframes: {
+        pulsar: {
+          '0%, 100%': { transform: 'scale(1)' }, // Começa e termina no tamanho normal
+          '50%': { transform: 'scale(1.03)' },   // No meio, cresce 3% (bem sutil)
+        }
+      },
+      animation: {
+        // Nome da classe: 'pulsar' | duração: 2s | tipo: suave | repetição: infinita
+        'pulsar': 'pulsar 2s ease-in-out infinite',
       }
     },
   },
