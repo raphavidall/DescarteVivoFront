@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import bannerBg from '../assets/banner-bg.svg';
+import bannerNight  from '../assets/banner-bg.svg';
+import bannerDay from '../assets/banner-bg-day.svg';
 
 const DashboardHero = ({ customButton }) => {
   const [expanded, setExpanded] = useState(true);
+
+  const currentHour = new Date().getHours();
+  const isDayTime = currentHour >= 6 && currentHour < 18;
+  const currentBanner = isDayTime ? bannerDay : bannerNight;
+
+  const baseColor = isDayTime ? '#87CEEB' : '#0F2C40'; // Azul céu ou Azul noite
+  const gradientClass = isDayTime 
+    ? "from-blue-400 to-yellow-200"
+    : "from-brand-dark to-blue-900";
 
   const animationClass = "animate-pulsar";
 
@@ -23,14 +33,14 @@ const DashboardHero = ({ customButton }) => {
 
   return (
     <div
-      className={`relative w-full transition-all duration-500 ease-in-out overflow-hidden ${expanded ? 'h-[400px]' : 'h-[100px]'}`}
-      style={{ backgroundColor: '#0F2C40' }}
+      className={`relative w-full transition-all duration-500 ease-in-out overflow-hidden ${expanded ? 'h-[400px]' : 'h-[120px]'}`}
+      style={{ backgroundColor: baseColor }}
     >
       <div className="absolute inset-0 bg-gradient-to-r from-brand-dark to-blue-900 opacity-90"></div>
 
       {/* Imagem de Fundo */}
       <img
-        src={bannerBg}
+        src={currentBanner }
         alt="Background"
         className="absolute inset-0 w-full h-full object-cover opacity-90"
       />
