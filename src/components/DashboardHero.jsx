@@ -82,7 +82,7 @@ const DashboardHero = ({ customButton }) => {
         onClick={() => setExpanded(!expanded)}
         className="absolute bottom-4 left-6 text-white text-sm flex items-center gap-2 hover:underline z-20"
       >
-        [{expanded ? '-' : '+'}] {expanded ? 'Encolher Banner' : 'Expandir Banner'}
+        [{expanded ? '-' : '+'}] {expanded ? 'Encolher' : 'Expandir'}
       </button>
     </div>
   );

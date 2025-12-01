@@ -43,7 +43,7 @@ const ProfilePage = () => {
 
     const firstName = user?.nome_completo?.split(' ')[0] || "Usuário";
     const userName = user?.nome_completo?.split(' ')[0].toLowerCase() || "user";
-    const saldo = user?.saldo_moedas?.toFixed(0) || "0";
+    const saldo = user?.saldo_moedas?.toFixed(2) || "0";
 
     const renderTabContent = () => {
         if (activeTab === 'PACOTES') {

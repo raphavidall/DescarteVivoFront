@@ -117,7 +117,7 @@ const NotificationCard = ({ notificacao, onAccept, onReject, onView }) => {
         {(visualState === "FINALIZADO" || visualState === "INFO") && (
           <div className="text-center py-2">
             {/* Se for finalizado, mostra ícone de sucesso, se for info, nada ou ícone de info */}
-            {visualState === "FINALIZADO" && <div className="font-bold text-blue-600 mb-1 text-sm">🚀 Processo Andou</div>}
+            {visualState === "FINALIZADO"}
 
             <button
               onClick={onView}

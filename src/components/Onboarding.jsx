@@ -87,14 +87,16 @@ const Onboarding = ({ steps, onFinish, onSkip }) => {
             )}
 
             {/* 3. CONTEÚDO (Texto + Calu) */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-y-auto">
                 {/* Caixa de Texto (Clicável) */}
-                <div className="bg-transparent text-white max-w-2xl w-full p-6 pointer-events-auto flex flex-col md:flex-row items-center gap-8 animate-fade-in mt-20">
+                <div className="bg-transparent text-white max-w-2xl w-full p-6 pointer-events-auto flex flex-col md:flex-row items-center gap-8 animate-fade-in mt-10 md:mt-0 pb-40 md:pb-6">
 
                     {/* Mascote */}
                     <div className="w-240 md:w-336 shrink-0">
                         <img
                             src={calu}
+                            alt="Calu"
+                            className="w-full drop-shadow-2xl"
                         />
                     </div>
 
@@ -110,20 +112,19 @@ const Onboarding = ({ steps, onFinish, onSkip }) => {
                         <div className="flex flex-col md:flex-row gap-4 justify-center md:justify-start">
                             <button
                                 onClick={onSkip}
-                                className="bg-brand-brown text-white font-black px-6 py-3 rounded-lg hover:brightness-110 uppercase text-sm"
+                                className="bg-brand-brown text-white font-black px-6 py-3 rounded-lg hover:brightness-110 uppercase text-sm order-2 md:order-1"
                             >
-                                Continuar s/ Calu
+                                Pular Tutorial
                             </button>
                             <button
                                 onClick={handleNext}
-                                className="bg-brand-green text-white font-black px-8 py-3 rounded-lg hover:brightness-110 uppercase text-sm shadow-lg"
+                                className="bg-brand-green text-white font-black px-8 py-3 rounded-lg hover:brightness-110 uppercase text-sm shadow-lg order-1 md:order-2"
                             >
-                                {currentStep === steps.length - 1 ? "Finalizar Tutorial" : "Continuar Tutorial"}
+                                {currentStep === steps.length - 1 ? "Finalizar" : "Próximo"}
                             </button>
                         </div>
 
-                        {/* Indicador de Progresso (Bolinhas) */}
-                        <div className="flex justify-center md:justify-center gap-2 mt-6">
+                        <div className="flex justify-center md:justify-start gap-2 mt-6">
                             {steps.map((_, idx) => (
                                 <div
                                     key={idx}
