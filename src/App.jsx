@@ -22,6 +22,8 @@ function App() {
 
         {/* Rota de Dashboard */}
         <Route path="/dashboard" element={<DashboardPage />} />
+
+        {/* Rota de Movimentar */}
         <Route path="/movimentar" element={<MovimentarPage />} />
 
         {/* Rota de Notificações */}
