@@ -1,17 +1,18 @@
 import React from 'react';
 import bgCalu from '../assets/bg-calu.svg';
+import logo from '../assets/logo-nav.svg';
 
 const AuthLayout = ({ children }) => {
   return (
     <div className="min-h-screen w-full flex">
-      
+
       {/* --- LADO ESQUERDO (Apenas Desktop) --- */}
       <div className="hidden md:flex w-5/12 bg-brand-dark relative flex-col items-center justify-start pt-20 p-8 text-center">
-        
+
         {/* Imagem de Fundo/Mascote */}
-        <img 
-          src={bgCalu} 
-          alt="Mascote Calu" 
+        <img
+          src={bgCalu}
+          alt="Mascote Calu"
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
 
@@ -28,14 +29,19 @@ const AuthLayout = ({ children }) => {
       {/* --- LADO DIREITO (Formulário) --- */}
       <div className="w-full md:w-7/12 bg-white flex flex-col justify-center items-center p-6 md:p-12">
         <div className="w-full max-w-md space-y-8">
-          
-          <div className="text-center md:text-right mb-10">
-            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none">
-              Descarte-Vivo
-            </h1>
-            <h2 className="text-2xl md:text-3xl font-light text-gray-600">
-              Fortaleza
-            </h2>
+
+          {/* Container da Logo */}
+          <div className="flex justify-center md:justify-end mb-10">
+            <img
+              src={logo}
+              alt="Logo Descarte Vivo"
+              /* w-48: Largura no Mobile (aumente se precisar, ex: w-56)
+                 md:w-64: Largura no Desktop (maior)
+                 h-auto: Mantém a proporção da altura
+                 object-contain: Garante que a imagem não distorça
+              */
+              className="w-48 md:w-64 h-auto object-contain"
+            />
           </div>
 
           {children}

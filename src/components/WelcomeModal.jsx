@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { useNavigate } from 'react-router-dom';
+import calu from '../assets/calu-hero.svg';
 
 const WelcomeModal = ({ onClose }) => {
   const navigate = useNavigate();
@@ -12,19 +13,24 @@ const WelcomeModal = ({ onClose }) => {
     const end = Date.now() + duration;
 
     (function frame() {
-      confetti({
+      // --- CORREÇÃO Z-INDEX: Definir aqui ---
+      const commonOptions = {
+        zIndex: 10001,
         particleCount: 5,
+        spread: 55,
+        colors: ['#4CAF50', '#FFD700', '#FFFFFF']
+      };
+
+      confetti({
+        ...commonOptions,
         angle: 60,
-        spread: 55,
         origin: { x: 0 },
-        colors: ['#4CAF50', '#FFD700', '#000000'] // Verde, Dourado e Preto
       });
+
       confetti({
-        particleCount: 5,
+        ...commonOptions,
         angle: 120,
-        spread: 55,
         origin: { x: 1 },
-        colors: ['#4CAF50', '#FFD700', '#000000']
       });
 
       if (Date.now() < end) {
@@ -34,51 +40,46 @@ const WelcomeModal = ({ onClose }) => {
   }, []);
 
   const handleAction = () => {
-      onClose();
-      navigate('/movimentar');
+    onClose();
+    navigate('/movimentar');
   };
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-        
-        <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center relative overflow-hidden shadow-2xl transform transition-all scale-100">
-            
-            {/* Fundo decorativo */}
-            <div className="absolute top-0 left-0 w-full h-2 bg-brand-green"></div>
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fade-in">
 
-            {/* Imagem do Calu */}
-            <div className="flex justify-center mb-6">
-                 {/* Se tiver a imagem calu-hero.svg na pasta public/img, use esta: */}
-                 <img src="/assets/calu-hero.svg" alt="Calu" className="w-40 h-40 object-contain drop-shadow-xl" />
-                 
-                 {/* Fallback caso não tenha a imagem ainda */}
-                 {/* <div className="w-32 h-32 bg-brand-green/20 rounded-full flex items-center justify-center text-6xl shadow-inner">
-                    🦎
-                 </div> */}
-            </div>
+      <div className="bg-brand-dark rounded-3xl p-8 max-w-md w-full text-center relative overflow-hidden shadow-2xl transform transition-all scale-100 border-2 border-brand-green/30">
 
-            <h2 className="text-3xl font-black uppercase text-brand-dark mb-2">
-                Bem-vindo!
-            </h2>
+        {/* Fundo decorativo */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 pointer-events-none"></div>
+        <div className="absolute top-0 left-0 w-full h-2 bg-brand-green"></div>
 
-            <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                Você ganhou <span className="text-brand-green font-black text-xl">10 moedas verdes</span> pelo seu primeiro acesso.
-            </p>
-
-            <div className="bg-gray-50 p-4 rounded-xl mb-8 border border-gray-100">
-                <p className="text-sm text-gray-500 font-medium">
-                    Aproveite para começar a movimentar Fortaleza fazendo o seu primeiro descarte ou comprando pacotes disponíveis.
-                </p>
-            </div>
-
-            <button 
-                onClick={handleAction}
-                className="w-full bg-black text-white font-black uppercase text-xl py-4 rounded-xl shadow-lg hover:bg-gray-800 transition-transform active:scale-95 animate-pulsar"
-            >
-                Movimentar Agora
-            </button>
-
+        {/* Imagem do Calu */}
+        <div className="flex justify-center mb-6 relative z-10">
+          <img src={calu} alt="Calu" className="w-48 h-48 object-contain drop-shadow-[0_0_15px_rgba(76,175,80,0.5)]" />
         </div>
+
+        <h2 className="text-4xl font-black uppercase text-white mb-4 relative z-10">
+          Bem-vindo!
+        </h2>
+
+        <p className="text-gray-300 text-xl mb-8 leading-relaxed relative z-10">
+          Você ganhou <span className="text-brand-green font-black text-2xl drop-shadow-sm">10 moedas verdes</span> pelo seu primeiro acesso.
+        </p>
+
+        <div className="bg-white/10 p-5 rounded-xl mb-8 border border-white/20 backdrop-blur-sm relative z-10">
+          <p className="text-sm text-gray-200 font-medium">
+            Aproveite para começar a movimentar Fortaleza fazendo o seu primeiro descarte ou comprando pacotes disponíveis.
+          </p>
+        </div>
+
+        <button
+          onClick={handleAction}
+          className="w-full bg-brand-green text-brand-dark font-black uppercase text-xl py-4 rounded-xl shadow-[0_0_20px_rgba(76,175,80,0.4)] hover:brightness-110 transition-transform active:scale-95 animate-pulsar relative z-10"
+        >
+          Movimentar Agora
+        </button>
+
+      </div>
     </div>
   );
 };
