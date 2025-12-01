@@ -12,7 +12,7 @@ const Navbar = () => {
     const [unreadCount, setUnreadCount] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // --- MUDANÇA 1: Estado para guardar os dados do usuário ---
+    // MUDANÇA 1: Estado para guardar os dados do usuário
     const [userData, setUserData] = useState({
         nome: 'User',
         saldo: 0
@@ -31,7 +31,6 @@ const Navbar = () => {
             }).catch(err => console.log("Erro badge"));
 
             // 2. Busca Dados Frescos do Usuário (Saldo Atualizado)
-            // Buscamos na API em vez de usar só o localStorage, pois o saldo muda.
             api.get(`/usuarios/${localUser.id}`).then(res => {
                 setUserData({
                     nome: res.data.nome_completo,
@@ -130,8 +129,6 @@ const Navbar = () => {
                             />
                         </div>
                     </button>
-                    {/* ------------------------------------------- */}
-
                 </div>
             </div>
 

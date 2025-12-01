@@ -22,7 +22,6 @@ const NotificationCard = ({ notificacao, onAccept, onReject, onView }) => {
 
   // --- LÓGICA DE PROGRESSO (Estado Derivado) ---
 
-  // Definimos um "peso" para cada status para saber se o processo andou ou voltou
   const statusWeight = {
     [PACOTE_STATUS.DISPONIVEL]: 0,
     [PACOTE_STATUS.AGUARDANDO_APROVACAO]: 1, // Solicitação de Compra
@@ -46,7 +45,6 @@ const NotificationCard = ({ notificacao, onAccept, onReject, onView }) => {
     if (lida) {
       // Se o pacote avançou além do ponto da notificação, foi sucesso.
       // Se voltou para disponível, foi rejeitado.
-      // Simplificação visual:
       visualState = "FINALIZADO";
     }
 
@@ -64,25 +62,6 @@ const NotificationCard = ({ notificacao, onAccept, onReject, onView }) => {
         visualState = "FINALIZADO";
       }
     }
-
-    //   if ((isPendingPurchase || isPendingDriver) && !lida) {
-    //       visualState = "PENDENTE";
-    //   } 
-    //   // Se o status atual for MAIOR que o da solicitação, foi Aceito/Avançou
-    //   // Ex: Estava em 1, foi para 2 (Aprovou). Estava em 2, foi para 3 (Pediu motorista).
-    //   else if (currentWeight > statusWeight[PACOTE_STATUS.AGUARDANDO_APROVACAO] && lida) {
-    //       visualState = "FINALIZADO"; 
-    //   }
-    //   else if (currentWeight > statusWeight[PACOTE_STATUS.AGUARDANDO_RETIRADA] && lida) {
-    //       visualState = "FINALIZADO";
-    //   }
-    //   // Se voltou para Disponível ou A Coletar (sem ser avanço natural), foi rejeitado
-    //   else if (pacote?.status === PACOTE_STATUS.DISPONIVEL || (pacote?.status === PACOTE_STATUS.A_COLETAR && !lida)) {
-    //       visualState = "REJEITADO";
-    //   }
-    //   else {
-    //       visualState = "FINALIZADO"; // Fallback seguro: O processo andou
-    //   }
   }
 
   return (

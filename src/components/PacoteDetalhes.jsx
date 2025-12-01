@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, X, Send, User, Lock } from 'lucide-react'; // <--- ADICIONEI O LOCK
 import api from '../services/api';
 import { PACOTE_STATUS } from '../utils/constants';
-import { BASE_URL } from '../services/api';
-
-// const API_URL = "http://localhost:3000";
 
 const PacoteDetalhes = ({ pacote, onClose, onUpdate }) => {
     const [mensagens, setMensagens] = useState([]);

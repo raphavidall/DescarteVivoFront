@@ -10,10 +10,9 @@ const DashboardPage = () => {
     const [showTutorial, setShowTutorial] = useState(false);
     const [showWelcomeReward, setShowWelcomeReward] = useState(false); // <--- Novo Estado
 
-    // Lista de Passos (Baseada nos seus prints)
     const tutorialSteps = [
         {
-            targetId: null, // Sem foco (Boas vindas)
+            targetId: null,
             title: "Bem-vindo ao Descarte Vivo Fortaleza!",
             content: "Eu sou o Calu! Talvez você tenha algumas dúvidas, então vou resumir o que você pode fazer aqui: Você pode descartar e coletar pacotes, usar seu saldo na nossa loja e muito mais."
         },

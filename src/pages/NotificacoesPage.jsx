@@ -15,7 +15,7 @@ const NotificacoesPage = () => {
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [selectedNotif, setSelectedNotif] = useState(null);
 
-    // Estados para o Modal de Visualização do Pacote ---
+    // Estados para o Modal de Visualização do Pacote
     const [viewingPacote, setViewingPacote] = useState(null);
 
     const navigate = useNavigate();

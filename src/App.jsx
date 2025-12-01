@@ -13,8 +13,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rotas de Login */}
+
+        {/* Rota Raiz */}
         <Route path="/" element={<LoginPage />} />
+
+        {/* Rota de Login */}
         <Route path="/login" element={<LoginPage />} />
 
         {/* Rota de Cadastro */}
@@ -40,6 +43,7 @@ function App() {
 
         {/* Rota 404 redireciona para login */}
         <Route path="*" element={<Navigate to="/" />} />
+
       </Routes>
     </BrowserRouter>
   );

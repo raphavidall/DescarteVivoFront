@@ -7,7 +7,6 @@ const Onboarding = ({ steps, onFinish, onSkip }) => {
 
     const step = steps[currentStep];
 
-    // Calcula a posição do destaque
     // EFEITO 1: Travar o Scroll (Roda apenas na montagem/desmontagem)
     useEffect(() => {
         // Ao abrir o componente, trava
@@ -19,7 +18,7 @@ const Onboarding = ({ steps, onFinish, onSkip }) => {
         };
     }, []); // Array vazio = roda só uma vez
 
-    // EFEITO 2: Calcular Posição (Roda quando o 'step' muda)
+    // EFEITO 2: Calcular Posição do Destaque (Roda quando o 'step' muda)
     useEffect(() => {
         // Seguranças
         if (!step) return;
@@ -77,7 +76,7 @@ const Onboarding = ({ steps, onFinish, onSkip }) => {
             {/* 2. BORDA DE DESTAQUE (Opcional, para dar o glow) */}
             {position && (
                 <div
-                    className="absolute border-2 border-brand-green rounded-lg shadow-[0_0_20px_rgba(76,175,80,0.6)] pointer-events-none transition-all duration-300"
+                    className="absolute border-2 border-brand-green shadow-[0_0_20px_rgba(76,175,80,0.6)] pointer-events-none transition-all duration-300"
                     style={{
                         top: position.top,
                         left: position.left,

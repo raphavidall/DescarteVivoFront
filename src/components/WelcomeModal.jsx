@@ -43,13 +43,13 @@ const WelcomeModal = ({ onClose }) => {
         
         <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center relative overflow-hidden shadow-2xl transform transition-all scale-100">
             
-            {/* Fundo decorativo sutil */}
+            {/* Fundo decorativo */}
             <div className="absolute top-0 left-0 w-full h-2 bg-brand-green"></div>
 
-            {/* Imagem do Calu (use a oficial se tiver, ou o placeholder) */}
+            {/* Imagem do Calu */}
             <div className="flex justify-center mb-6">
                  {/* Se tiver a imagem calu-hero.svg na pasta public/img, use esta: */}
-                 <img src="/src/calu-hero.svg" alt="Calu" className="w-40 h-40 object-contain drop-shadow-xl" />
+                 <img src="/assets/calu-hero.svg" alt="Calu" className="w-40 h-40 object-contain drop-shadow-xl" />
                  
                  {/* Fallback caso não tenha a imagem ainda */}
                  {/* <div className="w-32 h-32 bg-brand-green/20 rounded-full flex items-center justify-center text-6xl shadow-inner">

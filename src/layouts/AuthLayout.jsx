@@ -6,10 +6,6 @@ const AuthLayout = ({ children }) => {
     <div className="min-h-screen w-full flex">
       
       {/* --- LADO ESQUERDO (Apenas Desktop) --- */}
-      {/* MUDANÇAS AQUI:
-         1. Mudamos de 'justify-center' para 'justify-start' (alinha no topo)
-         2. Adicionamos 'pt-20' (espaço do teto até o balão)
-      */}
       <div className="hidden md:flex w-5/12 bg-brand-dark relative flex-col items-center justify-start pt-20 p-8 text-center">
         
         {/* Imagem de Fundo/Mascote */}
@@ -20,10 +16,6 @@ const AuthLayout = ({ children }) => {
         />
 
         {/* Balão de Texto */}
-        {/* MUDANÇAS AQUI:
-           1. Removemos o 'mt-[-200px]' que causava a sobreposição.
-           2. O balão agora respeita o fluxo e fica no topo devido ao 'justify-start' do pai.
-        */}
         <div className="relative z-10 bg-white p-6 rounded-2xl shadow-xl max-w-sm">
           <h2 className="text-xl font-bold mb-2 text-left">Bem-vindo!</h2>
           <p className="text-gray-700 text-sm text-left mb-4">
@@ -34,7 +26,6 @@ const AuthLayout = ({ children }) => {
       </div>
 
       {/* --- LADO DIREITO (Formulário) --- */}
-      {/* (Sem alterações aqui) */}
       <div className="w-full md:w-7/12 bg-white flex flex-col justify-center items-center p-6 md:p-12">
         <div className="w-full max-w-md space-y-8">
           

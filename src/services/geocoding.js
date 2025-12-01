@@ -29,7 +29,7 @@ export const geocodingService = {
       const response = await axios.get(`${NOMINATIM_API}/search`, {
         params: {
           format: 'json',
-          q: query + ", Fortaleza, Brasil", // Focando a busca
+          q: query + ", Fortaleza, Brasil",
           addressdetails: 1,
           limit: 1, // Pega só o melhor resultado
           'accept-language': 'pt-BR'
